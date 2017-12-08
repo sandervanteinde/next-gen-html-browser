@@ -60,9 +60,18 @@ namespace NextGen.CSSParser.Tokenization
         public string ReadTo(char v)
         {
             var index = _text.IndexOf(v, _pointer);
-            var result = _text.Substring(_pointer, index - _pointer);
-            _pointer = index;
-            return result;
+            if (index == -1)
+            {
+                var result = _text.Substring(_pointer);
+                _pointer = index;
+                return result;
+            }
+            else
+            {
+                var result = _text.Substring(_pointer, index - _pointer);
+                _pointer = index;
+                return result;
+            }
         }
 
         public string ReadToAny(params char[] chars)

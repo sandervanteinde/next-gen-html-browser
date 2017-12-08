@@ -25,40 +25,52 @@ namespace NextGen.CSSParser
             // Keep reading css blocks
             while (!tokenizer.Ended)
             {
-                styles.Add(Parse_CssBlock(tokenizer));
+                styles.AddRange(Parse_CssBlock(tokenizer));
                 tokenizer.SkipWhiteSpace();
             }
 
             return styles;
         }
 
-        private StyleBlock Parse_CssBlock(ICssTokenizer tokenizer)
+        private IEnumerable<StyleBlock> Parse_CssBlock(ICssTokenizer tokenizer)
         {
             // Header
-            var block = new StyleBlock();
-            block.Selector = Parse_CssBlockSelector(tokenizer);
+            var selectors = Parse_CssBlockSelector(tokenizer);
+            var rules = new List<StyleRule>();
 
             // Lines
             tokenizer.Expect('{');
             while (!tokenizer.NextIs('}'))
             {
-                block.AddRule(Parse_CssRule(tokenizer));
+                rules.Add(Parse_CssRule(tokenizer));
             }
             tokenizer.Expect('}');
 
-            return block;
+            // Return the list of blocks
+            return selectors.Select(selector =>
+            {
+                var result = new StyleBlock { Selector = selector };
+                rules.ForEach(result.AddRule);
+                return result;
+            });
         }
 
-        private StyleSelector Parse_CssBlockSelector(ICssTokenizer tokenizer)
+        private IEnumerable<StyleSelector> Parse_CssBlockSelector(ICssTokenizer tokenizer)
         {
             // Read selector
             var selectorText = tokenizer.ReadTo('{');
             selectorText = selectorText.Trim();
 
+            // Determine if we need to create multiple
+            if (selectorText.Contains(","))
+            {
+                return selectorText.Split(',').SelectMany(s => Parse_CssBlockSelector(new StringTokenizer(s)));
+            }
+
             // Catch all case
             if (selectorText.Equals("*"))
             {
-                return new StyleSelector { SelectAll = true };
+                return new[] { new StyleSelector { SelectAll = true } };
             }
 
             // Split selector
@@ -83,7 +95,7 @@ namespace NextGen.CSSParser
                 }
             }
 
-            return selector;
+            return new[] { selector };
         }
 
         private StyleRule Parse_CssRule(ICssTokenizer tokenizer)
