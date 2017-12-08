@@ -13,9 +13,10 @@ namespace NextGen.HTMLParser
             StringBuilder sb = new StringBuilder();
             foreach(var attr in this)
             {
+                sb.Append(' ');
                 sb.Append(attr.Name);
                 if (attr.Value != null)
-                    sb.Append(' ').Append(attr.Value);
+                    sb.Append("='").Append(attr.Value).Append('\'');
             }
             return sb.ToString();
         }

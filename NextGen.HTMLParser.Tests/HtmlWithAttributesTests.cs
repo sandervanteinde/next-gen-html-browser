@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NextGen.HTMLParser.Elements;
 
 namespace NextGen.HTMLParser.Tests
 {
@@ -11,8 +12,8 @@ namespace NextGen.HTMLParser.Tests
     <head>
     </head>
     <body>
-        <input type='text' value='hello'></input>
-        <img src='http://www.google.nl/logo.png' alt='Googlelogo!'></img>
+        <input type='tel' value='06-12345678'>
+        <img src='http://www.google.nl/logo.png' alt='Google logo!'>
     </body>
 </html>";
         [TestMethod]
@@ -30,11 +31,21 @@ namespace NextGen.HTMLParser.Tests
             var inputEl = doc.BodyElement.FindFirst("input");
             var typeAttr = inputEl.Attributes["type"];
             Assert.IsNotNull(typeAttr);
-            Assert.AreEqual("text", typeAttr.Value);
+            Assert.AreEqual("tel", typeAttr.Value);
+            Assert.AreEqual(InputElementType.Tel, ((InputElement)inputEl).Type);
 
             var value = inputEl.Attributes["value"];
             Assert.IsNotNull(value);
-            Assert.AreEqual("hello", value.Value);
+            Assert.AreEqual("06-12345678", value.Value);
+
+            var imgEl = doc.BodyElement.FindFirst("img");
+            var srcAttr = imgEl.Attributes["src"];
+            Assert.IsNotNull(srcAttr);
+            Assert.AreEqual("http://www.google.nl/logo.png", srcAttr.Value);
+
+            var altAttr = imgEl.Attributes["alt"];
+            Assert.IsNotNull(altAttr);
+            Assert.AreEqual("Google logo!", altAttr.Value);
         }
     }
 }
