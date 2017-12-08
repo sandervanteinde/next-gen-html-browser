@@ -45,6 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BrowserPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -53,6 +56,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -74,6 +80,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NextGen.CSSParser\NextGen.CSSParser.csproj">
+      <Project>{da40dfaa-167b-412e-8d0e-09f31ddd796b}</Project>
+      <Name>NextGen.CSSParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NextGen.HTMLParser\NextGen.HTMLParser.csproj">
+      <Project>{afca92cf-11d0-479c-bac8-2e2cbb9f56e6}</Project>
+      <Name>NextGen.HTMLParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ViewEngine\NextGen.ViewEngine.csproj">
+      <Project>{f6bb5bef-f9ac-4f6a-b606-1f240ce58b3d}</Project>
+      <Name>NextGen.ViewEngine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
