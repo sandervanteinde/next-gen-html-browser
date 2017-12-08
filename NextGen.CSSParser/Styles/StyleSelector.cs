@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NextGen.CSSParser
+namespace NextGen.CSSParser.Styles
 {
     public class StyleSelector
     {
@@ -20,6 +20,11 @@ namespace NextGen.CSSParser
         public string Id { get; internal set; }
 
         /// <summary>
+        /// The specificity of this selector
+        /// </summary>
+        public StyleRuleSpecificity Specificity => GetSpecificity();
+
+        /// <summary>
         /// The list of classes (if any, else empty)
         /// </summary>
         public IEnumerable<string> Classes => _classes.AsReadOnly();
@@ -29,6 +34,17 @@ namespace NextGen.CSSParser
         internal void AddClass(string s)
         {
             _classes.Add(s);
+        }
+
+        private StyleRuleSpecificity GetSpecificity()
+        {
+            var result = new StyleRuleSpecificity();
+            if (Id != null)
+                result.IdAttr++;
+            if (TagName != null)
+                result.Element++;
+            result.ClassAttr += _classes.Count;
+            return result;
         }
     }
 }

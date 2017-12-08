@@ -1,4 +1,5 @@
 ﻿using NextGen.CSSParser.Exceptions;
+using NextGen.CSSParser.Styles;
 using NextGen.CSSParser.Tokenization;
 using System;
 using System.Collections.Generic;

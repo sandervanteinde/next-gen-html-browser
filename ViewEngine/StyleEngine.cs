@@ -31,7 +31,7 @@ namespace NextGen.ViewEngine
             var stylerules = GetDefinedStylesForElement(element)
                 .SelectMany(sb =>
                 {
-                    return sb.Rules.Select(rule => (rule, specificity: sb.Specificity));
+                    return sb.Rules.Select(rule => (rule, specificity: sb.Selector.Specificity));
                 });
 
             var resultRules = new Dictionary<string, (StyleRule rule, StyleRuleSpecificity specificity)>();
