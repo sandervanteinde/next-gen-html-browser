@@ -17,7 +17,7 @@ namespace NextGen.CSSParser
         /// <summary>
         /// The id (if any, else null)
         /// </summary>
-        public object Id { get; internal set; }
+        public string Id { get; internal set; }
 
         /// <summary>
         /// The list of classes (if any, else empty)

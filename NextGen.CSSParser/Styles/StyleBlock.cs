@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NextGen.CSSParser.Styles;
+using System.Collections.Generic;
 
 namespace NextGen.CSSParser
 {
@@ -14,11 +15,18 @@ namespace NextGen.CSSParser
         /// </summary>
         public IEnumerable<StyleRule> Rules => _rules.AsReadOnly();
 
+        public StyleRuleSpecificity Specificity => GetSpecificity();
+
         private List<StyleRule> _rules = new List<StyleRule>();
 
         internal void AddRule(StyleRule rule)
         {
             _rules.Add(rule);
+        }
+
+        private StyleRuleSpecificity GetSpecificity()
+        {
+            return new StyleRuleSpecificity();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace NextGen.CSSParser
             var styles = new StyleDefinition();
 
             // Keep reading css blocks
-            while(!tokenizer.Ended)
+            while (!tokenizer.Ended)
             {
                 styles.Add(Parse_CssBlock(tokenizer));
                 tokenizer.SkipWhiteSpace();
@@ -39,7 +39,7 @@ namespace NextGen.CSSParser
 
             // Lines
             tokenizer.Expect('{');
-            while(!tokenizer.NextIs('}'))
+            while (!tokenizer.NextIs('}'))
             {
                 block.AddRule(Parse_CssRule(tokenizer));
             }
@@ -55,7 +55,7 @@ namespace NextGen.CSSParser
             selectorText = selectorText.Trim();
 
             // Catch all case
-            if(selectorText.Equals("*"))
+            if (selectorText.Equals("*"))
             {
                 return new StyleSelector { SelectAll = true };
             }
@@ -63,7 +63,7 @@ namespace NextGen.CSSParser
             // Split selector
             var selector = new StyleSelector();
             var t = new StringTokenizer(selectorText);
-            if(!t.NextIsAny('.', '#'))
+            if (!t.NextIsAny('.', '#'))
             {
                 selector.TagName = t.ReadToAny('.', '#');
             }
@@ -73,7 +73,8 @@ namespace NextGen.CSSParser
                 {
                     t.Expect('.');
                     selector.AddClass(t.ReadToAny('.', '#'));
-                } else if(t.NextIs('#'))
+                }
+                else if (t.NextIs('#'))
                 {
                     t.Expect('#');
                     if (selector.Id != null) throw new InvalidStyleException();
@@ -86,6 +87,7 @@ namespace NextGen.CSSParser
 
         private StyleRule Parse_CssRule(ICssTokenizer tokenizer)
         {
+            // Read property name and value
             tokenizer.SkipWhiteSpace();
             var property = tokenizer.ReadTo(':');
             tokenizer.Expect(':');
@@ -93,7 +95,14 @@ namespace NextGen.CSSParser
             var value = tokenizer.ReadTo(';').Trim();
             tokenizer.Expect(';');
 
-            return new StyleRule { Name = property, Value = value };
+            if (value.EndsWith("!important"))
+            {
+                return new StyleRule { Name = property, Value = value.Substring(0, value.Length - "!important".Length), Important = true };
+            }
+            else
+            {
+                return new StyleRule { Name = property, Value = value };
+            }
         }
     }
 }

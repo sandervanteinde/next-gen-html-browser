@@ -19,5 +19,18 @@ namespace NextGen.CSSParser
         {
             _blocks.Add(styleBlock);
         }
+
+        internal void AddRange(IEnumerable<StyleBlock> styleBlocks)
+        {
+            _blocks.AddRange(styleBlocks);
+        }
+
+        public static StyleDefinition operator +(StyleDefinition sd1, StyleDefinition sd2)
+        {
+            var result = new StyleDefinition();
+            result.AddRange(sd1.Blocks);
+            result.AddRange(sd2.Blocks);
+            return result;
+        }
     }
 }

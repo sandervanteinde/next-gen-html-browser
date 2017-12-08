@@ -13,6 +13,8 @@ namespace NextGen.HTMLParser
         public List<DOMElement> Children { get; set; } = new List<DOMElement>();
         public string Content { get; internal set; }
         public DOMAttributeCollection Attributes { get; } = new DOMAttributeCollection();
+        public string Id => Attributes["id"].Value;
+        public IEnumerable<string> ClassList => Attributes["class"]?.Value?.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) ?? new string[0];
         internal int BodyIndex { get; set; }
         internal int EndBodyIndex { get; set; }
         public override string ToString()
