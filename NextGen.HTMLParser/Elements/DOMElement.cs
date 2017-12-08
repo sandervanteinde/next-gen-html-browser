@@ -9,19 +9,12 @@ namespace NextGen.HTMLParser
     public class DOMElement
     {
         public string Name { get; set; }
+        public DOMElement Parent { get; internal set; }
         public List<DOMElement> Children { get; set; } = new List<DOMElement>();
-        public string Content { get; set; }
-        public DOMAttributeCollection Attributes { get; set; } = new DOMAttributeCollection();
-        internal int BodyIndex { get; private set; }
+        public string Content { get; internal set; }
+        public DOMAttributeCollection Attributes { get; } = new DOMAttributeCollection();
+        internal int BodyIndex { get; set; }
         internal int EndBodyIndex { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index">The index of where the body of this element starts</param>
-        internal DOMElement(int index)
-        {
-            BodyIndex = index;
-        }
         public override string ToString()
         {
             var attributeString = Attributes.ToString();

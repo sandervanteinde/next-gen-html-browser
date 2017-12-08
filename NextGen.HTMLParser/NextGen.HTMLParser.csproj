@@ -40,11 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DOMAttribute.cs" />
-    <Compile Include="DOMAttributeCollection.cs" />
-    <Compile Include="DOMElement.cs" />
+    <Compile Include="Attributes\DOMAttribute.cs" />
+    <Compile Include="Attributes\DOMAttributeCollection.cs" />
+    <Compile Include="DOMElementForAttribute.cs" />
+    <Compile Include="Elements\DOMElement.cs" />
+    <Compile Include="Elements\InputElement.cs" />
     <Compile Include="HTMLDocument.cs" />
     <Compile Include="HTMLReader.cs" />
+    <Compile Include="HTMLReaderHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

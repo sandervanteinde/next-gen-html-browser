@@ -37,7 +37,9 @@ namespace NextGen.HTMLParser
             {
                 var newElement = ReadElement();
                 if (newElement == null) continue; //end tag
-                domTree.Peek().Children.Add(newElement);
+                var parent = domTree.Peek();
+                parent.Children.Add(newElement);
+                newElement.Parent = parent;
                 domTree.Push(newElement);
             }
             return html;
@@ -71,10 +73,11 @@ namespace NextGen.HTMLParser
                 topElement.Content = contents.Substring(topElement.BodyIndex, topElement.EndBodyIndex - topElement.BodyIndex + 1).Trim(' ', '\n', '\r');
                 return null;
             }
-            var element = new DOMElement(position);
             var result = nodeRegex.Match(node);
             if (!result.Success)
                 throw new Exception("This node is fucked");
+            var element = HTMLReaderHelper.GetDOMElementForType(result.Groups[1].Value);
+            element.BodyIndex = position;
             element.Name = result.Groups[1].Value;
             string attributes = result.Groups[2].Value.Trim(' ');
             if (attributes.Length > 0)
