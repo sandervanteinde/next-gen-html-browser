@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NextGen.CSSParser
+namespace NextGen.CSSParser.Exceptions
 {
-    public class Class1
+    public class InvalidStyleException : Exception
     {
     }
 }
