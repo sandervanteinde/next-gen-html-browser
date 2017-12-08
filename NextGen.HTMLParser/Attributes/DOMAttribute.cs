@@ -8,7 +8,12 @@ namespace NextGen.HTMLParser
 {
     public class DOMAttribute
     {
-        public string Name { get; set; }
+        private string _name;
+        public string Name
+        {
+            get => _name;
+            set => _name = value.ToLower();
+        }
         public string Value { get; set; }
     }
 }

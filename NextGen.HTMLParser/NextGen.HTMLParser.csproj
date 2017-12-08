@@ -40,10 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\AttributeParser.cs" />
     <Compile Include="Attributes\DOMAttribute.cs" />
     <Compile Include="Attributes\DOMAttributeCollection.cs" />
     <Compile Include="DOMElementForAttribute.cs" />
     <Compile Include="Elements\DOMElement.cs" />
+    <Compile Include="Elements\ImageElement.cs" />
     <Compile Include="Elements\InputElement.cs" />
     <Compile Include="HTMLDocument.cs" />
     <Compile Include="HTMLReader.cs" />

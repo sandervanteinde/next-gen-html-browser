@@ -4,17 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NextGen.HTMLParser
+namespace NextGen.HTMLParser.Elements
 {
     public class DOMElement
     {
-        public string Name { get; set; }
+        public bool RequireEndTag { get; protected set; } = true;
+        public string Name { get; private set; }
         public DOMElement Parent { get; internal set; }
         public List<DOMElement> Children { get; set; } = new List<DOMElement>();
         public string Content { get; internal set; }
         public DOMAttributeCollection Attributes { get; } = new DOMAttributeCollection();
         internal int BodyIndex { get; set; }
         internal int EndBodyIndex { get; set; }
+        public DOMElement(string name)
+        {
+            Name = name;
+        }
         public override string ToString()
         {
             var attributeString = Attributes.ToString();
