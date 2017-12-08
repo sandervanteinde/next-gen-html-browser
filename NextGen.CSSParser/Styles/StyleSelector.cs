@@ -38,6 +38,11 @@ namespace NextGen.CSSParser.Styles
 
         private StyleRuleSpecificity GetSpecificity()
         {
+            // Easy case
+            if (SelectAll)
+                return new StyleRuleSpecificity();
+
+            // Build specificity
             var result = new StyleRuleSpecificity();
             if (Id != null)
                 result.IdAttr++;
