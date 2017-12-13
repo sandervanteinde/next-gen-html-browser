@@ -95,6 +95,14 @@ namespace NextGen.HTMLParser
         private DOMElement ReadElement()
         {
             int startTag = contents.IndexOf('<', position);
+
+            var leftOverText = contents.Substring(position, startTag - position).Trim();
+            if(!string.IsNullOrEmpty(leftOverText))
+            {
+                // TODO: Handle input tags on top of stack
+                domTree.Peek().Children.Add(new TextElement { Content = leftOverText });
+            }
+
             int endTag = contents.IndexOf('>', position);
             string tag = contents.Substring(startTag, endTag - startTag + 1);
             position = endTag + 1;

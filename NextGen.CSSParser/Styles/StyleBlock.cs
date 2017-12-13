@@ -13,13 +13,6 @@ namespace NextGen.CSSParser
         /// <summary>
         /// The rules in this style block.
         /// </summary>
-        public IEnumerable<StyleRule> Rules => _rules.AsReadOnly();
-
-        private List<StyleRule> _rules = new List<StyleRule>();
-
-        internal void AddRule(StyleRule rule)
-        {
-            _rules.Add(rule);
-        }
+        public StyleruleCollection Rules { get; internal set; }
     }
 }

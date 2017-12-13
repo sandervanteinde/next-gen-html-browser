@@ -8,6 +8,8 @@ using NextGen.HTMLParser;
 using System.IO;
 using NextGen.CSSParser;
 using NextGen.ViewEngine;
+using NextGen.HTMLParser.Elements;
+using System.Drawing;
 
 namespace NextGen.Browser
 {
@@ -15,7 +17,7 @@ namespace NextGen.Browser
     {
         private HTMLDocument document;
         private string documentPath;
-        private StyleEngine engine;
+        private StyleEngine styleEngine;
         internal void SetDocument(HTMLDocument document, string path)
         {
             this.document?.Dispose();
@@ -24,7 +26,7 @@ namespace NextGen.Browser
             var engine = new StyleEngine();
             foreach (var style in FindStyleDocuments())
                 engine.LoadDefinition(style);
-            this.engine = engine;
+            this.styleEngine = engine;
             Invalidate();
         }
         private IEnumerable<StyleDefinition> FindStyleDocuments()
@@ -54,7 +56,35 @@ namespace NextGen.Browser
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+            if (document == null) return;
 
+            RenderElement(document.BodyElement, styleEngine, ClientRectangle, e.Graphics);
+        }
+
+        private void RenderElement(DOMElement element, StyleEngine styleEngine, Rectangle rect, Graphics g)
+        {
+            var elementStyles = styleEngine.GetCalculatedStylesForElement(element);
+
+            // Search for background color
+            if(elementStyles.BackgroundColor != null)
+            {
+                using(var b = new SolidBrush(elementStyles.BackgroundColor))
+                {
+                    g.FillRectangle(b, rect);
+                }
+            }
+
+            // Search for text content
+            if(element is TextElement te)
+            {
+                g.DrawString(te.Content, SystemFonts.DefaultFont, new SolidBrush(Color.Black), new Point(rect.Left, 0));
+            }
+
+            // Recurse
+            foreach(var child in element.Children)
+            {
+                RenderElement(child, styleEngine, rect, g);
+            }
         }
     }
 }

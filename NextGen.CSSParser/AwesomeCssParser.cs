@@ -1,8 +1,10 @@
 ﻿using NextGen.CSSParser.Exceptions;
+using NextGen.CSSParser.Helpers;
 using NextGen.CSSParser.Styles;
 using NextGen.CSSParser.Tokenization;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,22 +38,20 @@ namespace NextGen.CSSParser
         {
             // Header
             var selectors = Parse_CssBlockSelector(tokenizer);
-            var rules = new List<StyleRule>();
+            var rules = new StyleruleCollection();
 
             // Lines
             tokenizer.Expect('{');
             while (!tokenizer.NextIs('}'))
             {
-                rules.Add(Parse_CssRule(tokenizer));
+                Parse_CssRule(tokenizer, rules);
             }
             tokenizer.Expect('}');
 
             // Return the list of blocks
             return selectors.Select(selector =>
             {
-                var result = new StyleBlock { Selector = selector };
-                rules.ForEach(result.AddRule);
-                return result;
+                return new StyleBlock { Selector = selector, Rules = rules };
             });
         }
 
@@ -98,7 +98,7 @@ namespace NextGen.CSSParser
             return new[] { selector };
         }
 
-        private StyleRule Parse_CssRule(ICssTokenizer tokenizer)
+        private void Parse_CssRule(ICssTokenizer tokenizer, StyleruleCollection rules)
         {
             // Read property name and value
             tokenizer.SkipWhiteSpace();
@@ -108,13 +108,21 @@ namespace NextGen.CSSParser
             var value = tokenizer.ReadTo(';').Trim();
             tokenizer.Expect(';');
 
-            if (value.EndsWith("!important"))
+            // Split important
+            bool important = value.EndsWith("!important");
+            if (important)
+                value = value.Substring(0, value.Length - "!important".Length).Trim();
+
+            // Parse value
+            switch (property)
             {
-                return new StyleRule { Name = property, Value = value.Substring(0, value.Length - "!important".Length), Important = true };
-            }
-            else
-            {
-                return new StyleRule { Name = property, Value = value };
+                case "background-color":
+                    rules.BackgroundColor = new StylePropertyValue<Color>
+                    {
+                        Value = ColorHelper.ParseColor(value),
+                        Important = important
+                    };
+                    break;
             }
         }
     }

@@ -26,20 +26,20 @@ namespace NextGen.ViewEngine
             return styleblocks;
         }
 
-        public IEnumerable<StyleRule> GetCalculatedStylesForElement(DOMElement element)
+        public StyleruleCollection GetCalculatedStylesForElement(DOMElement element)
         {
-            var stylerules = GetDefinedStylesForElement(element)
-                .SelectMany(sb =>
-                {
-                    return sb.Rules.Select(rule => (rule, specificity: sb.Selector.Specificity));
-                });
+            var stylerules = GetDefinedStylesForElement(element).SelectMany(sb =>
+            {
+                return sb.Rules.GetProperties().Select(rule => (specificity: sb.Selector.Specificity, rule));
+            });
 
-            var resultRules = new Dictionary<string, (StyleRule rule, StyleRuleSpecificity specificity)>();
+            var resultRules = new Dictionary<string, (StyleRuleSpecificity specificity, (string name, AbstractStylePropertyValue value) rule)>();
 
+            // Determine new rules
             foreach (var newRule in stylerules)
             {
                 // Easy case
-                var newRuleName = newRule.rule.Name;
+                var newRuleName = newRule.rule.name;
                 if (!resultRules.ContainsKey(newRuleName))
                 {
                     resultRules.Add(newRuleName, newRule);
@@ -47,16 +47,22 @@ namespace NextGen.ViewEngine
                 }
 
                 // Compare importance
-                var existingRule = resultRules[newRule.rule.Name];
-                if (newRule.rule.Important)
+                var existingRule = resultRules[newRule.rule.name];
+                if (newRule.rule.value.Important)
                     resultRules[newRuleName] = newRule;
-                else if (existingRule.rule.Important)
+                else if (existingRule.rule.value.Important)
                     continue;
                 else if (newRule.specificity >= existingRule.specificity)
                     resultRules[newRuleName] = newRule;
             }
 
-            return resultRules.Values.Select(v => v.rule);
+            // Create new collection
+            var result = new StyleruleCollection();
+            foreach (var rule in resultRules)
+            {
+                result.SetProperty(rule.Value.rule.name, rule.Value.rule.value);
+            }
+            return result;
         }
 
         private bool DoSelectorsMatch(DOMElement element, StyleSelector selector)

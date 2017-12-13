@@ -37,10 +37,11 @@ namespace NextGen.Browser
         {
             if(File.Exists(file))
             {
-                var stream = File.OpenRead(file);
-                HTMLDocument document = new HTMLDocument(stream);
-                document.Parse();
-                SetDocument(document, file);
+                using(var stream = File.OpenRead(file)) {
+                    HTMLDocument document = new HTMLDocument(stream);
+                    document.Parse();
+                    SetDocument(document, file);
+                }
             }
         }
         private void SetDocument(HTMLDocument document, string location)

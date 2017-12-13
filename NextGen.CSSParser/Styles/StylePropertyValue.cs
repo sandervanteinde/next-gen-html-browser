@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NextGen.CSSParser.Styles
+{
+    public class StylePropertyValue<T> : AbstractStylePropertyValue
+    {
+        public T Value { get; internal set; }
+
+        public static implicit operator T(StylePropertyValue<T> obj)
+        {
+            return obj.Value;
+        }
+    }
+}
