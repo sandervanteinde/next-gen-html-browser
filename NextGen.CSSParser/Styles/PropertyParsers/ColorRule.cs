@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace NextGen.CSSParser.Styles.PropertyParsers
 {
-    internal class BackgroundColorRule : AbstractPropertyRule<Color>
+    internal class ColorRule : AbstractPropertyRule<Color>
     {
-        public override string PropertyName => "background-color";
+        public override string PropertyName => "color";
 
         protected override void Execute(string propertyValue, StylePropertyValue<Color> prop)
         {

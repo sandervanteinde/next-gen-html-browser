@@ -13,6 +13,7 @@ namespace NextGen.CSSParser.Styles.PropertyParsers
         internal PropertyValueParser()
         {
             RegisterParserRule(new BackgroundColorRule());
+            RegisterParserRule(new ColorRule());
         }
 
         public void RegisterParserRule(IPropertyValueRule parser)
@@ -20,9 +21,11 @@ namespace NextGen.CSSParser.Styles.PropertyParsers
             _parsers.Add(parser.PropertyName, parser);
         }
 
-        public IPropertyValueRule GetParserForRule(string rule)
+        public IPropertyValueRule GetParserRule(string rule)
         {
-            return _parsers[rule];
+            if (!_parsers.TryGetValue(rule, out IPropertyValueRule parserRule))
+                throw new Exception();
+            return parserRule;
         }
     }
 }

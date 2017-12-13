@@ -18,6 +18,6 @@ namespace NextGen.CSSParser.Styles
 
         public bool Important { get; internal set; }
 
-        public ValueType ValueType { get; internal set; }
+        public ValueTypes ValueType { get; internal set; }
     }
 }

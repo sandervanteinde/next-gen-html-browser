@@ -10,6 +10,8 @@ using NextGen.CSSParser;
 using NextGen.ViewEngine;
 using NextGen.HTMLParser.Elements;
 using System.Drawing;
+using ViewEngine;
+using ViewEngine.Compositing;
 
 namespace NextGen.Browser
 {
@@ -17,24 +19,30 @@ namespace NextGen.Browser
     {
         private HTMLDocument document;
         private string documentPath;
-        private StyleEngine styleEngine;
+        private StyleEngine styleEngine = new StyleEngine();
+        private CompositingEngine compositingEngine = new CompositingEngine();
+
         internal void SetDocument(HTMLDocument document, string path)
         {
             this.document?.Dispose();
             this.document = document;
             documentPath = path;
-            var engine = new StyleEngine();
             foreach (var style in FindStyleDocuments())
-                engine.LoadDefinition(style);
-            this.styleEngine = engine;
+                styleEngine.LoadDefinition(style);
             Invalidate();
         }
         private IEnumerable<StyleDefinition> FindStyleDocuments()
         {
-            foreach(var style in document.HeadElement.FindAll("style"))
+            // First style sheet is the useragent
+            yield return LoadStyleFromText(File.ReadAllText("./useragent.css"));
+
+            // Load all inline styles
+            foreach (var style in document.HeadElement.FindAll("style"))
             {
                 yield return LoadStyleFromText(style.Content);
             }
+
+            // Load all linked stylesheets
             foreach(var style in document.HeadElement.FindAll("link")
                                     .Where(c => c.Attributes["rel"]?.Value == "stylesheet"))
             {
@@ -58,32 +66,40 @@ namespace NextGen.Browser
             base.OnPaint(e);
             if (document == null) return;
 
-            RenderElement(document.BodyElement, styleEngine, ClientRectangle, e.Graphics);
+            // Build the viewmodel
+            var viewmodel = compositingEngine.CreateViewModel(document.BodyElement, styleEngine, ClientRectangle);
+
+            // Render the element
+            RenderElement(viewmodel, ClientRectangle, e.Graphics);
         }
 
-        private void RenderElement(DOMElement element, StyleEngine styleEngine, Rectangle rect, Graphics g)
+        private void RenderElement(Box b, Rectangle rect, Graphics g)
         {
-            var elementStyles = styleEngine.GetCalculatedStylesForElement(element);
+            // Determine some vars
+            var currentRect = b.Rect.Add(rect.Location);
 
-            // Search for background color
-            if(elementStyles.BackgroundColor != null)
+            // Render properties
+            if(b.Styles.BackgroundColor != null)
             {
-                using(var b = new SolidBrush(elementStyles.BackgroundColor))
+                using(var brush = new SolidBrush(b.Styles.BackgroundColor))
                 {
-                    g.FillRectangle(b, rect);
+                    g.FillRectangle(brush, currentRect);
                 }
             }
 
-            // Search for text content
-            if(element is TextElement te)
+            // Render content if present
+            if(b.Text != null)
             {
-                g.DrawString(te.Content, SystemFonts.DefaultFont, new SolidBrush(Color.Black), new Point(rect.Left, 0));
+                using (var brush = new SolidBrush(b.Styles.Color))
+                {
+                    g.DrawString(b.Text, SystemFonts.DefaultFont, brush, b.Rect);
+                }
             }
 
             // Recurse
-            foreach(var child in element.Children)
+            foreach(var child in b.Children)
             {
-                RenderElement(child, styleEngine, rect, g);
+                RenderElement(child, currentRect, g);
             }
         }
     }

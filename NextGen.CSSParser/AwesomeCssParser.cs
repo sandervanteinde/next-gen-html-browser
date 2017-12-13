@@ -111,25 +111,12 @@ namespace NextGen.CSSParser
             var value = tokenizer.ReadTo(';').Trim();
             tokenizer.Expect(';');
 
-            // Split important
-            bool important = value.EndsWith("!important");
-            if (important)
-                value = value.Substring(0, value.Length - "!important".Length).Trim();
-
             // Get parser for rule
-            var parser = PropertyValueParser.GetParserForRule(property);
-            AbstractStylePropertyValue val = parser.CreateNewValueInstance();
-            val.Important = important;
+            var parser = PropertyValueParser.GetParserRule(property);
+            if (parser == null) return;
 
-            // Cases
-            if (value == "inherit")
-                val.ValueType = AbstractStylePropertyValue.ValueTypes.Inherit;
-            else if (value == "initial")
-                val.ValueType = AbstractStylePropertyValue.ValueTypes.Initial;
-            else if (value == "unset")
-                val.ValueType = AbstractStylePropertyValue.ValueTypes.Unset;
-            else
-                parser.ParseValue(value, val);
+            // Parse the value
+            AbstractStylePropertyValue val = parser.ParseValue(value);
 
             // Set the rule
             rules.SetProperty(property, val);

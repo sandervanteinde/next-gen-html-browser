@@ -10,10 +10,9 @@ namespace NextGen.CSSParser.Styles
     public class StyleruleCollection
     {
         private static string[] Properties = new[] {
-            "background-color"
+            "background-color",
+            "color"
         };
-
-        private Dictionary<string, AbstractStylePropertyValue> _props = new Dictionary<string, AbstractStylePropertyValue>();
 
         public StylePropertyValue<Color> BackgroundColor
         {
@@ -23,6 +22,29 @@ namespace NextGen.CSSParser.Styles
                 SetProperty("background-color", value);
             }
         }
+
+        public StylePropertyValue<Color> Color
+        {
+            get => GetTypedProperty<Color>("color");
+            set
+            {
+                SetProperty("color", value);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        private Dictionary<string, AbstractStylePropertyValue> _props = new Dictionary<string, AbstractStylePropertyValue>();
 
         public StylePropertyValue<T> GetTypedProperty<T>(string index)
         {

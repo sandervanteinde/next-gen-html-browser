@@ -10,8 +10,6 @@ namespace NextGen.CSSParser.Styles.PropertyParsers
     {
         string PropertyName { get; }
 
-        AbstractStylePropertyValue CreateNewValueInstance();
-
-        void ParseValue(string propertyValue, AbstractStylePropertyValue propInstance);
+        AbstractStylePropertyValue ParseValue(string propertyValue);
     }
 }

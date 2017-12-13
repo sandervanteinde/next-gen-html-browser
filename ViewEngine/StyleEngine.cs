@@ -48,9 +48,9 @@ namespace NextGen.ViewEngine
 
                 // Compare importance
                 var existingRule = resultRules[newRule.rule.name];
-                if (newRule.rule.value.Important)
+                if (newRule.rule.value != null && newRule.rule.value.Important)
                     resultRules[newRuleName] = newRule;
-                else if (existingRule.rule.value.Important)
+                else if (existingRule.rule.value != null && existingRule.rule.value.Important)
                     continue;
                 else if (newRule.specificity >= existingRule.specificity)
                     resultRules[newRuleName] = newRule;
