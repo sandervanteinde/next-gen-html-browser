@@ -1,6 +1,7 @@
 ﻿using NextGen.CSSParser.Exceptions;
 using NextGen.CSSParser.Helpers;
 using NextGen.CSSParser.Styles;
+using NextGen.CSSParser.Styles.PropertyParsers;
 using NextGen.CSSParser.Tokenization;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace NextGen.CSSParser
 {
     public class AwesomeCssParser
     {
+        public PropertyValueParser PropertyValueParser { get; } = new PropertyValueParser();
+
         public StyleDefinition ParseFromString(string css)
         {
             return Parse(new StringTokenizer(css));
@@ -113,17 +116,23 @@ namespace NextGen.CSSParser
             if (important)
                 value = value.Substring(0, value.Length - "!important".Length).Trim();
 
-            // Parse value
-            switch (property)
-            {
-                case "background-color":
-                    rules.BackgroundColor = new StylePropertyValue<Color>
-                    {
-                        Value = ColorHelper.ParseColor(value),
-                        Important = important
-                    };
-                    break;
-            }
+            // Get parser for rule
+            var parser = PropertyValueParser.GetParserForRule(property);
+            AbstractStylePropertyValue val = parser.CreateNewValueInstance();
+            val.Important = important;
+
+            // Cases
+            if (value == "inherit")
+                val.ValueType = AbstractStylePropertyValue.ValueTypes.Inherit;
+            else if (value == "initial")
+                val.ValueType = AbstractStylePropertyValue.ValueTypes.Initial;
+            else if (value == "unset")
+                val.ValueType = AbstractStylePropertyValue.ValueTypes.Unset;
+            else
+                parser.ParseValue(value, val);
+
+            // Set the rule
+            rules.SetProperty(property, val);
         }
     }
 }
