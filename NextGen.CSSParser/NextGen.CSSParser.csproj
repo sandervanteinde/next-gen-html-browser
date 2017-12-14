@@ -49,9 +49,12 @@
     <Compile Include="Exceptions\InvalidStyleException.cs" />
     <Compile Include="Helpers\ColorHelper.cs" />
     <Compile Include="Styles\AbstractStylePropertyValue.cs" />
+    <Compile Include="Styles\DataTypes\BlockDisplayTypes.cs" />
+    <Compile Include="Styles\DataTypes\BoxPositionTypes.cs" />
     <Compile Include="Styles\PropertyParsers\AbstractPropertyRule.cs" />
     <Compile Include="Styles\PropertyParsers\BackgroundColorRule.cs" />
     <Compile Include="Styles\PropertyParsers\ColorRule.cs" />
+    <Compile Include="Styles\PropertyParsers\DisplayRule.cs" />
     <Compile Include="Styles\PropertyParsers\IPropertyValueRule.cs" />
     <Compile Include="Styles\PropertyParsers\PropertyValueParser.cs" />
     <Compile Include="Styles\StylePropertyValue.cs" />

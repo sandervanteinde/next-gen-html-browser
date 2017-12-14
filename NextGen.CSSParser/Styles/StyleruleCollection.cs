@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NextGen.CSSParser.Styles.DataTypes;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -11,7 +12,9 @@ namespace NextGen.CSSParser.Styles
     {
         private static string[] Properties = new[] {
             "background-color",
-            "color"
+            "color",
+            "display",
+            "position"
         };
 
         public StylePropertyValue<Color> BackgroundColor
@@ -32,7 +35,23 @@ namespace NextGen.CSSParser.Styles
             }
         }
 
+        public StylePropertyValue<BlockDisplayTypes> Display
+        {
+            get => GetTypedProperty<BlockDisplayTypes>("display");
+            set
+            {
+                SetProperty("display", value);
+            }
+        }
 
+        public StylePropertyValue<BoxPositionTypes> Position
+        {
+            get => GetTypedProperty<BoxPositionTypes>("position");
+            set
+            {
+                SetProperty("position", value);
+            }
+        }
 
 
 

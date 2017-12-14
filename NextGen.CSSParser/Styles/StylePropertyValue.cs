@@ -15,5 +15,13 @@ namespace NextGen.CSSParser.Styles
         {
             return obj.Value;
         }
+
+        public static implicit operator StylePropertyValue<T>(T obj)
+        {
+            return new StylePropertyValue<T> {
+                Value = obj,
+                ValueType = ValueTypes.Value
+            };
+        }
     }
 }

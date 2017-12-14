@@ -14,6 +14,7 @@ namespace NextGen.CSSParser.Styles.PropertyParsers
         {
             RegisterParserRule(new BackgroundColorRule());
             RegisterParserRule(new ColorRule());
+            RegisterParserRule(new DisplayRule());
         }
 
         public void RegisterParserRule(IPropertyValueRule parser)

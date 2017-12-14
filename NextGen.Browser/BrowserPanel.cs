@@ -43,7 +43,7 @@ namespace NextGen.Browser
             }
 
             // Load all linked stylesheets
-            foreach(var style in document.HeadElement.FindAll("link")
+            foreach (var style in document.HeadElement.FindAll("link")
                                     .Where(c => c.Attributes["rel"]?.Value == "stylesheet"))
             {
                 var href = style.Attributes["href"];
@@ -67,39 +67,33 @@ namespace NextGen.Browser
             if (document == null) return;
 
             // Build the viewmodel
-            var viewmodel = compositingEngine.CreateViewModel(document.BodyElement, styleEngine, ClientRectangle);
+            var viewmodel = compositingEngine.CreateViewModel(document.BodyElement, styleEngine);
+            viewmodel.X.OnNext(ClientRectangle.Left);
+            viewmodel.Y.OnNext(ClientRectangle.Top);
+            viewmodel.Width.OnNext(ClientRectangle.Width);
+            viewmodel.Height.OnNext(ClientRectangle.Height);
 
             // Render the element
-            RenderElement(viewmodel, ClientRectangle, e.Graphics);
+            RenderElement(viewmodel, e.Graphics);
         }
 
-        private void RenderElement(Box b, Rectangle rect, Graphics g)
+        private void RenderElement(Box b, Graphics g)
         {
-            // Determine some vars
-            var currentRect = b.Rect.Add(rect.Location);
-
             // Render properties
-            if(b.Styles.BackgroundColor != null)
+            using (var brush = new SolidBrush(b.BackgroundColor.Value))
             {
-                using(var brush = new SolidBrush(b.Styles.BackgroundColor))
-                {
-                    g.FillRectangle(brush, currentRect);
-                }
+                g.FillRectangle(brush, b.CurrentRectangle);
             }
 
             // Render content if present
-            if(b.Text != null)
-            {
-                using (var brush = new SolidBrush(b.Styles.Color))
-                {
-                    g.DrawString(b.Text, SystemFonts.DefaultFont, brush, b.Rect);
-                }
-            }
+            if (!string.IsNullOrEmpty(b.Text.Value))
+                using (var brush = new SolidBrush(b.TextColor.Value))
+                    g.DrawString(b.Text.Value, SystemFonts.DefaultFont, brush, b.CurrentRectangle);
 
             // Recurse
-            foreach(var child in b.Children)
+            foreach (var child in b.Children.Value)
             {
-                RenderElement(child, currentRect, g);
+                RenderElement(child, g);
             }
         }
     }
