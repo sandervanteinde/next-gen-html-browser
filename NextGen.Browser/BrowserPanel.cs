@@ -22,6 +22,11 @@ namespace NextGen.Browser
         private StyleEngine styleEngine = new StyleEngine();
         private CompositingEngine compositingEngine = new CompositingEngine();
 
+        public BrowserPanel()
+        {
+            DoubleBuffered = true;
+        }
+
         internal void SetDocument(HTMLDocument document, string path)
         {
             this.document?.Dispose();
@@ -74,6 +79,7 @@ namespace NextGen.Browser
             viewmodel.Height.OnNext(ClientRectangle.Height);
 
             // Render the element
+            e.Graphics.Clear(Color.White);
             RenderElement(viewmodel, e.Graphics);
         }
 
@@ -82,13 +88,19 @@ namespace NextGen.Browser
             // Render properties
             using (var brush = new SolidBrush(b.BackgroundColor.Value))
             {
-                g.FillRectangle(brush, b.CurrentRectangle);
+                g.FillRectangle(brush, b.Rect.Value);
             }
 
             // Render content if present
             if (!string.IsNullOrEmpty(b.Text.Value))
                 using (var brush = new SolidBrush(b.TextColor.Value))
-                    g.DrawString(b.Text.Value, SystemFonts.DefaultFont, brush, b.CurrentRectangle);
+                    g.DrawString(b.Text.Value, SystemFonts.DefaultFont, brush, b.Rect.Value, StringFormat.GenericTypographic);
+
+            // Render debug markers
+            if(!string.IsNullOrEmpty(b.Text.Value))
+            {
+                g.FillRectangle(new SolidBrush(Color.Yellow), new RectangleF(b.TextEndOffset.Value, new Size(10, 10)));
+            }
 
             // Recurse
             foreach (var child in b.Children.Value)

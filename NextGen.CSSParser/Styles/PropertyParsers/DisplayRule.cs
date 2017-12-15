@@ -18,6 +18,9 @@ namespace NextGen.CSSParser.Styles.PropertyParsers
                 case "block":
                     prop.Value = BlockDisplayTypes.Block;
                     break;
+                case "inline":
+                    prop.Value = BlockDisplayTypes.Inline;
+                    break;
                 default:
                     throw new Exception();
             }

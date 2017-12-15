@@ -19,6 +19,9 @@ namespace NextGen.Browser
         {
             InitializeComponent();
             Text = BROWSER_NAME;
+            ResizeEnd += (sender, args) => {
+                browserPanel1.Invalidate();
+            };
         }
 
         private void textBox1_KeyUp(object sender, KeyEventArgs e)

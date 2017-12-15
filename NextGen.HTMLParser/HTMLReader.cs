@@ -96,8 +96,8 @@ namespace NextGen.HTMLParser
         {
             int startTag = contents.IndexOf('<', position);
 
-            var leftOverText = contents.Substring(position, startTag - position).Trim();
-            if(!string.IsNullOrEmpty(leftOverText))
+            var leftOverText = contents.Substring(position, startTag - position);
+            if(!string.IsNullOrWhiteSpace(leftOverText))
             {
                 // TODO: Handle input tags on top of stack
                 domTree.Peek().Children.Add(new TextElement { Content = leftOverText });
