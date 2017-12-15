@@ -30,7 +30,7 @@ namespace ViewEngine
 
             if(charsOnFirstLine.Count() == text.Length)
             {
-                return (new RectangleF(0, 0, width, charsOnFirstLine[0].Height), new PointF(0, charsOnFirstLine.Max(region => region.Right)));
+                return (new RectangleF(0, 0, width, charsOnFirstLine[0].Height), new PointF(charsOnFirstLine.Last().Right, 0));
             }
 
             // Get offset for next line
@@ -42,7 +42,7 @@ namespace ViewEngine
             format.SetMeasurableCharacterRanges(new[] { new CharacterRange(text2.Length - 1, 1)});
             var region2 = g.MeasureCharacterRanges(text2, f, new RectangleF(0, offsetNextLine, width, Int64.MaxValue), format)[0].GetBounds(g);
 
-            return (new RectangleF(0, 0, width, region2.Bottom), new PointF(region2.Top, region2.Right));
+            return (new RectangleF(0, 0, width, region2.Bottom), new PointF(region2.Right, region2.Top));
         }
 
         public static IEnumerable<RectangleF> MeasureCharacterRangesAdvanced(this Graphics g, string text, Font f, RectangleF r)

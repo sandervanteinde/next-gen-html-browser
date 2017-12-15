@@ -76,7 +76,7 @@ namespace NextGen.Browser
             viewmodel.X.OnNext(ClientRectangle.Left);
             viewmodel.Y.OnNext(ClientRectangle.Top);
             viewmodel.Width.OnNext(ClientRectangle.Width);
-            viewmodel.Height.OnNext(ClientRectangle.Height);
+            Height = (int) viewmodel.Children.Value[0].Height.Value;
 
             // Render the element
             e.Graphics.Clear(Color.White);
@@ -97,9 +97,10 @@ namespace NextGen.Browser
                     g.DrawString(b.Text.Value, SystemFonts.DefaultFont, brush, b.Rect.Value, StringFormat.GenericTypographic);
 
             // Render debug markers
-            if(!string.IsNullOrEmpty(b.Text.Value))
+            if (!string.IsNullOrEmpty(b.Text.Value))
             {
-                g.FillRectangle(new SolidBrush(Color.Yellow), new RectangleF(b.TextEndOffset.Value, new Size(10, 10)));
+                g.FillRectangle(new SolidBrush(Color.Yellow),
+                    new RectangleF(b.TextEndOffset.Value, new Size(10, 10)));
             }
 
             // Recurse

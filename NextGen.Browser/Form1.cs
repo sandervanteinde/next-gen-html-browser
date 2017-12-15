@@ -29,7 +29,7 @@ namespace NextGen.Browser
             if(e.KeyCode == Keys.Enter)
             {
                 string text = textBox1.Text;
-                if(text.StartsWith("wwww") || text.StartsWith("http"))
+                if(text.StartsWith("www") || text.StartsWith("http"))
                     HandleWebRequest(text);
                 else
                     HandleFile(text);

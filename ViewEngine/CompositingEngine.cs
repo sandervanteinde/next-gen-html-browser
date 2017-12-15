@@ -258,7 +258,12 @@ namespace ViewEngine
                         // element.Height.OnNext(textSize.Height);
                         var s = Scratchpad.MeasureStringAdvanced(text, SystemFonts.DefaultFont, parentWidth, startOffset.X);
                         element.Height.OnNext(s.rect.Height);
-                        element.TextEndOffset.OnNext(s.end);
+                        element.TextEndOffset.OnNext(
+                            new PointF(
+                                s.end.X + element.Location.Value.X,
+                                s.end.Y + element.Location.Value.Y
+                                )
+                            );
                         return;
                     }
 
@@ -361,14 +366,14 @@ namespace ViewEngine
 
                 if (context == BoxChildFormattingContext.Block)
                 {
-                    var offset = element.Location.Value;
+                    var blocklayoutOffset = element.Location.Value;
                     foreach (var child in children)
                     {
-                        child.X.OnNext(offset.X);
-                        child.Y.OnNext(offset.Y);
-                        offset = new PointF(
-                            offset.X,
-                            offset.Y + child.Size.Value.Height
+                        child.X.OnNext(blocklayoutOffset.X);
+                        child.Y.OnNext(blocklayoutOffset.Y);
+                        blocklayoutOffset = new PointF(
+                            blocklayoutOffset.X,
+                            blocklayoutOffset.Y + child.Size.Value.Height
                             );
                     }
                     return;
@@ -377,6 +382,7 @@ namespace ViewEngine
                 if (context == BoxChildFormattingContext.Inline)
                 {
                     // TODO
+                    throw new NotImplementedException();
                 }
             };
 
